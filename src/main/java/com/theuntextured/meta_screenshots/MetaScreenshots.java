@@ -1,6 +1,7 @@
 package com.theuntextured.meta_screenshots;
 
 import com.mojang.logging.LogUtils;
+import com.theuntextured.meta_screenshots.containers.ScreenshotContainer;
 import com.theuntextured.meta_screenshots.network.ModMessages;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -34,5 +35,6 @@ public class MetaScreenshots {
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Enqueue the network registration to ensure thread safety during boot
         event.enqueueWork(ModMessages::register);
+        ScreenshotContainer.Initialize();
     }
 }
