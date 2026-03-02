@@ -1,6 +1,7 @@
 # Meta Screenshots
 
-> [!WARNING] WORK IN PROGRESS!
+> [!WARNING]
+> WORK IN PROGRESS!
 
 Stop losing track of where your best Minecraft moments happened. **Meta Screenshots** is a lightweight mod for Forge 1.20.1 that upgrades your screenshot system with smart location tracking and seamless map integration.
 
