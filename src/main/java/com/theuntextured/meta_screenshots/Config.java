@@ -11,14 +11,17 @@ public class Config {
 
     private static final ForgeConfigSpec.BooleanValue MOD_ENABLED = BUILDER.comment("Whether the mod should be enabled").define("modEnabled", true);
     private static final ForgeConfigSpec.BooleanValue COPY_TO_CLIPBOARD = BUILDER.comment("Copy screenshots to clipboard").define("copyToClipboard", true);
+    private static final ForgeConfigSpec.IntValue THUMBNAIL_HEIGHT = BUILDER.comment("Screenshot thumbnail height in pixels").defineInRange("thumbnailHeight", 240, 16, 1080);
 
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static boolean modEnabled = true;
     public static boolean copyToClipboard = true;
+    public static int thumbnailHeight = 240;
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         modEnabled = MOD_ENABLED.get();
         copyToClipboard = COPY_TO_CLIPBOARD.get();
+        thumbnailHeight = THUMBNAIL_HEIGHT.get();
     }
 }

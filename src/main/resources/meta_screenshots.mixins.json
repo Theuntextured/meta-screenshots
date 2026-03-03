@@ -2,11 +2,13 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.theuntextured.meta_screenshots.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "meta_screenshots.refmap.json",
   "mixins": [
+    "XaeroFullscreenMapAccessor"
   ],
   "client": [
+    "XaeroFullscreenMapMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,11 +1,10 @@
 package com.theuntextured.meta_screenshots.containers;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.theuntextured.meta_screenshots.util.ImageHelper;
-import com.theuntextured.meta_screenshots.util.MetaDataHelper;
+import com.theuntextured.meta_screenshots.util.WorldIdData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -61,8 +60,8 @@ public class Screenshot {
             worldName = mc.getCurrentServer().name;
         }
 
-        if (MetaDataHelper.currentWorldUUID != null && !MetaDataHelper.currentWorldUUID.isEmpty()) {
-            worldId = MetaDataHelper.currentWorldUUID;
+        if (WorldIdData.currentWorldUUID != null && !WorldIdData.currentWorldUUID.isEmpty()) {
+            worldId = WorldIdData.currentWorldUUID;
         } else if (mc.getCurrentServer() != null) {
             // The UUID is null. The mod is missing on the server.
             // Fallback to the IP address.

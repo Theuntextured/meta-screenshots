@@ -36,7 +36,7 @@ public class ImageHelper {
                 thumbDir.mkdirs(); // Force the OS to create the directory if it is missing
             }
 
-            BufferedImage thumbImage = createThumbnail(fullImage, 240);
+            BufferedImage thumbImage = createThumbnail(fullImage, Config.thumbnailHeight);
             File thumbFile = new File(thumbDir, targetFile.getName());
             savePngWithMetadata(thumbImage, thumbFile, jsonPayload);
 
@@ -143,7 +143,7 @@ public class ImageHelper {
                 if (fullImage == null) return;
 
                 // Generate and seal the new thumbnail
-                BufferedImage thumbImage = createThumbnail(fullImage, 240);
+                BufferedImage thumbImage = createThumbnail(fullImage, Config.thumbnailHeight);
                 savePngWithMetadata(thumbImage, thumbFile, jsonPayload);
 
                 LogUtils.getLogger().info("Retroactively generated missing thumbnail for: " + originalFile.getName());

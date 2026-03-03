@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class WorldIdData extends SavedData {
     private String worldId;
+    static public String currentWorldUUID;
 
     // Called when generating a brand-new world ID
     public WorldIdData() {

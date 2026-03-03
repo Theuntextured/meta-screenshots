@@ -4,7 +4,7 @@ import com.theuntextured.meta_screenshots.Config;
 import com.theuntextured.meta_screenshots.MetaScreenshots;
 import com.theuntextured.meta_screenshots.containers.Screenshot;
 import com.theuntextured.meta_screenshots.containers.ScreenshotContainer;
-import com.theuntextured.meta_screenshots.util.MetaDataHelper;
+import com.theuntextured.meta_screenshots.util.WorldIdData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -28,7 +28,7 @@ public class ScreenshotEventHandler {
         Screenshot screenshot = new Screenshot(event);
         if(!screenshot.isValid()) return;
         ScreenshotContainer.allScreenshots.add(screenshot);
-        if(MetaDataHelper.currentWorldUUID != null) ScreenshotContainer.worldScreenshots.add(screenshot);
+        if(WorldIdData.currentWorldUUID != null) ScreenshotContainer.worldScreenshots.add(screenshot);
 
         event.setCanceled(true);
 

@@ -1,7 +1,7 @@
 package com.theuntextured.meta_screenshots.network;
 
 import com.theuntextured.meta_screenshots.containers.ScreenshotContainer;
-import com.theuntextured.meta_screenshots.util.MetaDataHelper;
+import com.theuntextured.meta_screenshots.util.WorldIdData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
@@ -29,7 +29,7 @@ public class SyncWorldIdPacket {
 
         // Push the assignment to the main thread to prevent concurrency crashes
         ctx.enqueueWork(() -> {
-            MetaDataHelper.currentWorldUUID = this.worldId;
+            WorldIdData.currentWorldUUID = this.worldId;
             ScreenshotContainer.reconstructWorldScreenshots();
         });
 

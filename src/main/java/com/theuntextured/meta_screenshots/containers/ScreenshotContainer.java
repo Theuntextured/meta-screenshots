@@ -1,7 +1,7 @@
 package com.theuntextured.meta_screenshots.containers;
 
 import com.mojang.logging.LogUtils;
-import com.theuntextured.meta_screenshots.util.MetaDataHelper;
+import com.theuntextured.meta_screenshots.util.WorldIdData;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class ScreenshotContainer {
 
     public static void reconstructWorldScreenshots() {
         worldScreenshots.clear();
-        String currentWorldUUID = MetaDataHelper.currentWorldUUID;
+        String currentWorldUUID = WorldIdData.currentWorldUUID;
         if(currentWorldUUID == null) return;
         LogUtils.getLogger().info("Searching screenshots for world " + currentWorldUUID);
         for (Screenshot screenshot : allScreenshots)
