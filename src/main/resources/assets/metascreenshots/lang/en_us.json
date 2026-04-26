@@ -1,0 +1,13 @@
+{
+  "itemGroup.metascreenshots": "Meta Screenshots",
+  "block.metascreenshots.example_block": "Example Block",
+  "item.metascreenshots.example_item": "Example Item",
+
+  "metascreenshots.configuration.title": "Meta Screenshots Configs",
+  "metascreenshots.configuration.section.metascreenshots.common.toml": "Meta Screenshots Configs",
+  "metascreenshots.configuration.section.metascreenshots.common.toml.title": "Meta Screenshots Configs",
+  "metascreenshots.configuration.items": "Item List",
+  "metascreenshots.configuration.logDirtBlock": "Log Dirt Block",
+  "metascreenshots.configuration.magicNumberIntroduction": "Magic Number Text",
+  "metascreenshots.configuration.magicNumber": "Magic Number"
+}

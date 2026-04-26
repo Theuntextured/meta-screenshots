@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "com.theuntextured.metascreenshots.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "XaeroFullscreenMapMixin"
+  ],
+  "mixins": [
+    "XaeroFullscreenMapAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
