@@ -4,17 +4,33 @@ import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.containers.Screenshot;
 import com.theuntextured.metascreenshots.containers.ScreenshotContainer;
 import com.theuntextured.metascreenshots.gui.IMapDescriptor;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class POIManager {
+    List<PointOfInterest> clusters;
+    IMapDescriptor mapDescriptor;
 
-    public static List<PointOfInterest> calculateClusters(
-            IMapDescriptor mapDescriptor) {
-        List<PointOfInterest> clusters = new ArrayList<>();
+    public POIManager(IMapDescriptor  mapDescriptor) {
+        this.mapDescriptor = mapDescriptor;
+        calculateClusters();
+    }
+
+    public void render(GuiGraphics graphics){
+        PointOfInterest focusedPOI = null;
+        for (PointOfInterest POI : clusters) {
+            if (POI.bIsMouseOver) focusedPOI = POI;
+            else POI.render(graphics, mapDescriptor);
+        }
+        if (focusedPOI != null) focusedPOI.render(graphics, mapDescriptor);
+    }
+
+    private void calculateClusters() {
+        this.clusters = new ArrayList<>();
         final double MERGE_RADIUS_SQ = Config.pinMergeRadius * Config.pinMergeRadius;
 
         String renderDimension = mapDescriptor.getDimension();
@@ -62,6 +78,17 @@ public class POIManager {
             if (!merged) clusters.add(newPoint);
         }
 
-        return clusters;
+        PointOfInterest closestCluster = null;
+        double closestDistanceSq = Double.MAX_VALUE;
+
+        for (PointOfInterest cluster : clusters) {
+            if (!cluster.isMouseOver(mapDescriptor.getMouseX(), mapDescriptor.getMouseY())) continue;
+            double distSquared = Mth.square(cluster.screenX - mapDescriptor.getMouseX()) + Mth.square(cluster.screenY - mapDescriptor.getMouseY());
+            if (distSquared > closestDistanceSq) continue;
+            closestDistanceSq = distSquared;
+            closestCluster = cluster;
+        }
+        if (closestCluster != null) closestCluster.bIsMouseOver = true;
     }
 }
+

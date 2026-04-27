@@ -12,4 +12,8 @@ public class ModTextures {
             MetaScreenshots.MOD_ID,
             "textures/gui/single_pin.png"
     );
+    public static final ResourceLocation DOUBLE_PIN = ResourceLocation.fromNamespaceAndPath(
+            MetaScreenshots.MOD_ID,
+            "textures/gui/double_pin.png"
+    );
 }

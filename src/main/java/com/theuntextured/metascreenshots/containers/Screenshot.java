@@ -1,12 +1,15 @@
 package com.theuntextured.metascreenshots.containers;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
+import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.util.ImageHelper;
 import com.theuntextured.metascreenshots.util.WorldIdData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ScreenshotEvent;
@@ -24,10 +27,20 @@ public class Screenshot {
     public long dayTime;
     public String worldName =  "Unknown";
     public String worldId = "Unknown";
+    public int width;
+    public int height;
+    public int thumbWidth;
+    public int thumbHeight;
 
     private boolean isValid = false;
 
     public boolean isValid() { return isValid; }
+    public double getAspectRatio(){
+        return (double) width / (double) height;
+    }
+    public double getThumbnailAspectRatio(){
+        return (double) thumbWidth / (double) thumbHeight;
+    }
 
     public Screenshot(ScreenshotEvent screenshotEvent){
         Minecraft mc = Minecraft.getInstance();
@@ -61,6 +74,12 @@ public class Screenshot {
 
         isValid = true;
         var metadataPayload = getMetaData();
+        this.width = nativeImage.getWidth();
+        this.height = nativeImage.getHeight();
+        //same logic as in helper
+        float ratio = (float) this.width / this.height;
+        this.thumbHeight = Config.thumbnailHeight;
+        this.thumbWidth = Math.round(Config.thumbnailHeight * ratio);
 
         // Pass the raw NativeImage directly to the asynchronous thread
         CompletableFuture.runAsync(() -> ImageHelper.writeImageWithMetadata(nativeImage, targetFile, metadataPayload));
@@ -77,7 +96,7 @@ public class Screenshot {
         }
 
         try {
-            JsonObject data = com.google.gson.JsonParser.parseString(rawJson).getAsJsonObject();
+            JsonObject data = JsonParser.parseString(rawJson).getAsJsonObject();
 
             this.position = new Vec3(data.get("x").getAsDouble(), data.get("y").getAsDouble(), data.get("z").getAsDouble());
             this.yaw = data.get("yaw").getAsDouble();
@@ -126,31 +145,41 @@ public class Screenshot {
     private ResourceLocation fullTextureLocation = null;
 
     public ResourceLocation getThumbnailTexture() {
-        if (thumbTextureLocation == null && thumbFile != null && thumbFile.exists()) {
-            thumbTextureLocation = loadTextureIntoVRAM(thumbFile, "_thumb");
+        if (thumbTextureLocation == null && targetFile.exists()) {
+            try {
+                NativeImage image = NativeImage.read(new java.io.FileInputStream(thumbFile));
+                DynamicTexture texture = new DynamicTexture(image);
+                thumbWidth = image.getWidth();
+                thumbHeight = image.getHeight();
+                thumbTextureLocation = Minecraft.getInstance().getTextureManager().register(
+                        "meta_screenshots/thumbnails" + thumbFile.getName().toLowerCase().replace(".png", ""),
+                        texture
+                );
+            } catch (Exception e) {
+                LogUtils.getLogger().error("Failed to load texture into VRAM: " + thumbFile.getName(), e);
+                thumbTextureLocation = null;
+            }
         }
         return thumbTextureLocation;
     }
 
     public ResourceLocation getFullTexture() {
         if (fullTextureLocation == null && targetFile.exists()) {
-            fullTextureLocation = loadTextureIntoVRAM(targetFile, "_full");
+            try {
+                NativeImage image = NativeImage.read(new java.io.FileInputStream(targetFile));
+                DynamicTexture texture = new DynamicTexture(image);
+                width = image.getWidth();
+                height = image.getHeight();
+                fullTextureLocation = Minecraft.getInstance().getTextureManager().register(
+                        "meta_screenshots/screenshots" + targetFile.getName().toLowerCase().replace(".png", ""),
+                        texture
+                );
+            } catch (Exception e) {
+                LogUtils.getLogger().error("Failed to load texture into VRAM: " + targetFile.getName(), e);
+                fullTextureLocation = null;
+            }
         }
         return fullTextureLocation;
-    }
-
-    private ResourceLocation loadTextureIntoVRAM(File file, String suffix) {
-        try {
-            NativeImage image = NativeImage.read(new java.io.FileInputStream(file));
-            net.minecraft.client.renderer.texture.DynamicTexture texture = new net.minecraft.client.renderer.texture.DynamicTexture(image);
-            return Minecraft.getInstance().getTextureManager().register(
-                    "meta_screenshots/screenshots" + file.getName().toLowerCase().replace(".png", "") + suffix,
-                    texture
-            );
-        } catch (Exception e) {
-            LogUtils.getLogger().error("Failed to load texture into VRAM: " + file.getName(), e);
-            return null;
-        }
     }
 
     public void freeTextures() {

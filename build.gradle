@@ -102,38 +102,32 @@ runs {
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+
+    // Custom configuration to isolate the Xaero map jar for extraction
+    xaeroMap
+    implementation.extendsFrom(xaeroMap)
 }
 
 dependencies {
-    // Specify the version of Minecraft to use.
-    // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
-    // The group for userdev is net.neoforged, the module name is neoforge, and the version is the same as the neoforge version.
-    // You can however also use the vanilla plugin (net.neoforged.gradle.vanilla) to use a version of Minecraft without the neoforge loader.
-    // And its provides the option to then use net.minecraft as the group, and one of; client, server or joined as the module name, plus the game version as version.
-    // For all intends and purposes: You can treat this dependency as if it is a normal library you would use.
     implementation "net.neoforged:neoforge:${neo_version}"
-    implementation "curse.maven:xaeros-world-map-317780:7598481"
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
+    // Assign the variable from gradle.properties to our isolated configuration
+    xaeroMap "${xaero_map_maven}"
 
-    // Example mod dependency using a file as dependency
-    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
+    // Tell the compiler to use the auto-extracted library
+    compileOnly fileTree(dir: "$buildDir/extracted-xaerolib", include: "*.jar")
+}
 
-    // Example project dependency using a sister or child project:
-    // implementation project(":myproject")
+// Task to rip the library out of the parent mod
+task extractXaeroLib(type: Copy) {
+    from {
+        configurations.xaeroMap.collect { zipTree(it) }
+    }
+    into "$buildDir/extracted-xaerolib"
 
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    include "META-INF/jarjar/xaerolib-*.jar"
+    eachFile { file -> file.path = file.name }
+    includeEmptyDirs = false
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -150,6 +144,7 @@ tasks.withType(ProcessResources).configureEach {
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            xaero_map_maven        : xaero_map_maven
     ]
     inputs.properties replaceProperties
 
@@ -173,6 +168,8 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    // Ensure extraction runs before compilation
+    dependsOn extractXaeroLib
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
