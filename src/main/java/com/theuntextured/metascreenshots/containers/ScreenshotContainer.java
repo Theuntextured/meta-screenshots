@@ -4,17 +4,18 @@ import com.mojang.logging.LogUtils;
 import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.util.WorldIdData;
 import net.minecraft.client.Minecraft;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 public class ScreenshotContainer {
-    static public HashSet<Screenshot> allScreenshots = new HashSet<>();
-    static public HashSet<Screenshot> worldScreenshots = new HashSet<>();
+    static public List<Screenshot> allScreenshots = new ArrayList<>();
+    static public List<Screenshot> worldScreenshots = new ArrayList<>();
 
     public static void init() {
-        // Access the default screenshots directory in the Minecraft instance
         File screenshotDir = new File(Minecraft.getInstance().gameDirectory, "screenshots");
 
         LogUtils.getLogger().info("Searching screenshots in " + screenshotDir.getAbsolutePath());
@@ -22,7 +23,6 @@ public class ScreenshotContainer {
         if (screenshotDir.exists() && screenshotDir.isDirectory()) {
             File[] files = screenshotDir.listFiles();
 
-            // Filter for PNG files and skip directories (such as 'thumbnails')
             if (files != null) for (File file : files)
                 if (file.isFile() && file.getName().toLowerCase().endsWith(".png")) {
                     Screenshot screenshot = new Screenshot(file);
@@ -37,7 +37,7 @@ public class ScreenshotContainer {
     public static void reconstructWorldScreenshots() {
         worldScreenshots.clear();
         String currentWorldUUID = WorldIdData.currentWorldUUID;
-        if(currentWorldUUID == null) return;
+        if(currentWorldUUID == null || !Config.modEnabled) return;
         LogUtils.getLogger().info("Searching screenshots for world " + currentWorldUUID);
         for (Screenshot screenshot : allScreenshots)
             if (screenshot.isValid() && Objects.equals(screenshot.worldId, currentWorldUUID))
@@ -45,6 +45,8 @@ public class ScreenshotContainer {
                 worldScreenshots.add(screenshot);
                 LogUtils.getLogger().info("Found screenshot: " + screenshot.targetFile.toString());
             }
+        // Annoying dude asked for this for stable POI sorting
+        worldScreenshots.sort(Comparator.comparingLong((Screenshot s) -> s.dayTime));
     }
 
     public static void setModEnabled(boolean enabled) {

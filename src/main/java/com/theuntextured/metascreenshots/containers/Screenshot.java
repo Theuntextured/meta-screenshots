@@ -12,14 +12,16 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ScreenshotEvent;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
+@OnlyIn(Dist.CLIENT)
 public class Screenshot {
 
-    // --- METADATA ---
     public Vec3 position;
     public double yaw;
     public double pitch;

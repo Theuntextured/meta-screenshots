@@ -3,6 +3,8 @@ package com.theuntextured.metascreenshots.util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -15,7 +17,7 @@ public class WorldIdData extends SavedData {
         return new SavedData.Factory<>(
                 WorldIdData::new,
                 WorldIdData::load,
-                null // DataFixTypes is generally null for simple modded data
+                null
         );
     }
 
@@ -29,13 +31,11 @@ public class WorldIdData extends SavedData {
         return tag;
     }
 
-    // Called when generating a brand-new world ID
     public WorldIdData() {
         this.worldId = UUID.randomUUID().toString();
         this.setDirty();
     }
 
-    // Called by the engine when loading from the disk
     private WorldIdData(CompoundTag tag) {
         if (tag.contains("meta_world_id")) {
             this.worldId = tag.getString("meta_world_id");
@@ -45,7 +45,6 @@ public class WorldIdData extends SavedData {
         }
     }
 
-    // The factory method Forge requires to instantiate this from NBT
     public static WorldIdData load(CompoundTag tag) {
         return new WorldIdData(tag);
     }

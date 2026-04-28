@@ -1,5 +1,7 @@
 package com.theuntextured.metascreenshots.mixin;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import xaero.map.MapProcessor;

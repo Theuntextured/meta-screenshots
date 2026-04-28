@@ -1,5 +1,9 @@
 package com.theuntextured.metascreenshots.gui;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public interface IMapDescriptor {
     double getCamX();
     double getCamZ();

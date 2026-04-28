@@ -11,6 +11,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,6 +24,7 @@ import xaero.map.WorldMap;
 import xaero.map.gui.GuiMap;
 import xaero.map.gui.GuiTexturedButton;
 
+@OnlyIn(Dist.CLIENT)
 @Mixin(value = GuiMap.class, remap = false)
 public abstract class XaeroFullscreenMapMixin {
 
@@ -86,20 +89,18 @@ public abstract class XaeroFullscreenMapMixin {
                 16, 16,
                 ModTextures.MOD_TOGGLE_DISABLED, ModTextures.MOD_TOGGLE,
                 (Button button) -> MetaScreenshots.setModEnabled(!Config.modEnabled),
-                () -> toggleTooltipDisabled,
-                () -> toggleTooltipEnabled);
+                () -> Config.modEnabled ? toggleTooltipEnabled : toggleTooltipDisabled);
         toggleModButton.state = () -> Config.modEnabled;
         self().addButton(toggleModButton);
 
-        Tooltip reloadTooltip = new Tooltip(Component.literal("Enable Meta Screenshots Mod"));
+        Tooltip reloadTooltip = new Tooltip(Component.literal("Reload Meta Screenshots Mod"));
         GuiTexturedButtonDualState reloadModButton = new GuiTexturedButtonDualState(
                 20, self().height - 40,
                 20, 20,
                 0, 0,
                 16, 16,
                 ModTextures.RELOAD, ModTextures.RELOAD,
-                (Button button) -> MetaScreenshots.setModEnabled(true),
-                () -> reloadTooltip,
+                (Button button) -> MetaScreenshots.setModEnabled(Config.modEnabled),
                 () -> reloadTooltip);
         reloadModButton.visibility = () -> Config.modEnabled;
         self().addButton(reloadModButton);

@@ -1,5 +1,6 @@
 package com.theuntextured.metascreenshots.events;
 
+import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.MetaScreenshots;
 import com.theuntextured.metascreenshots.containers.Screenshot;
 import com.theuntextured.metascreenshots.containers.ScreenshotContainer;
@@ -23,8 +24,14 @@ public class ScreenshotEventHandler {
 
         Screenshot screenshot = new Screenshot(event);
         if(!screenshot.isValid()) return;
-        ScreenshotContainer.allScreenshots.add(screenshot);
-        if(WorldIdData.currentWorldUUID != null) ScreenshotContainer.worldScreenshots.add(screenshot);
+        if (Config.modEnabled) {
+            ScreenshotContainer.allScreenshots.add(screenshot);
+            if(WorldIdData.currentWorldUUID != null) ScreenshotContainer.worldScreenshots.add(screenshot);
+        }
+        else {
+            // just in case
+            screenshot.freeTextures();
+        }
 
         event.setCanceled(true);
 

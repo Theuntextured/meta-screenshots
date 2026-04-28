@@ -5,7 +5,10 @@ import com.theuntextured.metascreenshots.gui.IMapDescriptor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class MapDrawingHelper {
     public static void renderOnMap(GuiGraphics graphics, IMapDescriptor descriptor, ResourceLocation texture,
                                    double worldX, double worldZ,

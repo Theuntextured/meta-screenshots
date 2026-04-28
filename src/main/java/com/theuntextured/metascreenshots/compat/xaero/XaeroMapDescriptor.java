@@ -3,9 +3,12 @@ package com.theuntextured.metascreenshots.compat.xaero;
 import com.theuntextured.metascreenshots.gui.IMapDescriptor;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import xaero.map.gui.GuiMap;
 import com.theuntextured.metascreenshots.mixin.XaeroFullscreenMapAccessor;
 
+@OnlyIn(Dist.CLIENT)
 public class XaeroMapDescriptor implements IMapDescriptor {
 
     private final double camX;

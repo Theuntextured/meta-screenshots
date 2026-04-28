@@ -18,19 +18,16 @@ public class ServerEventHandler {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            if (!player.connection.hasChannel(SyncWorldIdPacket.TYPE)) return;
             MinecraftServer server = player.getServer();
             if (server != null) {
                 // Always anchor global data to the Overworld, even if the player logs into the Nether
                 ServerLevel overworld = server.getLevel(Level.OVERWORLD);
                 if (overworld != null) {
-
-                    // The computeIfAbsent signature now requires a Factory record
                     WorldIdData data = overworld.getDataStorage().computeIfAbsent(
                             WorldIdData.factory(),
                             "meta_screenshot_id"
                     );
-
-                    // Blast the payload to the client
                     ModMessages.sendToPlayer(new SyncWorldIdPacket(data.getWorldId()), player);
                 }
             }

@@ -4,7 +4,10 @@ import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.gui.IMapDescriptor;
 import com.theuntextured.metascreenshots.gui.MapOverlayManager;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class XaeroIntegrationWrapper {
     public static void onRender(GuiGraphics graphics, xaero.map.gui.GuiMap screen, int mX, int mY, float pt) {
         if(!Config.modEnabled) return;

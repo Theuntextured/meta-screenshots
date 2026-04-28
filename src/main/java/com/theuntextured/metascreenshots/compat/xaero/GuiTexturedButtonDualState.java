@@ -5,12 +5,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import xaero.lib.client.gui.widget.Tooltip;
 import xaero.map.gui.TooltipButton;
 
 import java.util.function.Supplier;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiTexturedButtonDualState extends TooltipButton {
     protected int textureX;
     protected int textureY;
@@ -18,13 +21,12 @@ public class GuiTexturedButtonDualState extends TooltipButton {
     protected int textureH;
     protected ResourceLocation textureA;
     protected ResourceLocation textureB;
-    protected Supplier<Tooltip> altTooltip;
     @NotNull
     public Supplier<Boolean> state;
     @NotNull
     public Supplier<Boolean> visibility;
 
-    public GuiTexturedButtonDualState(int x, int y, int w, int h, int textureX, int textureY, int textureW, int textureH, ResourceLocation textureA, ResourceLocation textureB, Button.OnPress onPress, Supplier<Tooltip> tooltip, Supplier<Tooltip> altTooltip) {
+    public GuiTexturedButtonDualState(int x, int y, int w, int h, int textureX, int textureY, int textureW, int textureH, ResourceLocation textureA, ResourceLocation textureB, Button.OnPress onPress, Supplier<Tooltip> tooltip) {
         super(x, y, w, h, Component.literal(""), onPress, tooltip);
         this.textureX = textureX;
         this.textureY = textureY;
@@ -32,16 +34,12 @@ public class GuiTexturedButtonDualState extends TooltipButton {
         this.textureH = textureH;
         this.textureA = textureA;
         this.textureB = textureB;
-        this.altTooltip = altTooltip;
         state = () -> false;
         visibility = () -> true;
     }
     @Override
     public @NotNull Component getMessage() {
-        if (state.get()) {
-            return (Component)(this.altTooltip != null ? Component.literal(((Tooltip)this.altTooltip.get()).getPlainText()) : super.getMessage());
-        }
-        return (Component)(this.tooltipSupplier != null ? Component.literal(((Tooltip)this.tooltipSupplier.get()).getPlainText()) : super.getMessage());
+        return this.tooltipSupplier != null ? Component.literal(this.tooltipSupplier.get().getPlainText()) : super.getMessage();
     }
 
     @Override

@@ -14,13 +14,12 @@ public class ModMessages {
 
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {
-        // The registrar automatically namespaces payloads based on the mod ID
-        final PayloadRegistrar registrar = event.registrar("1.0");
+        final PayloadRegistrar registrar = event.registrar("1.0").optional();
 
         registrar.playToClient(
                 SyncWorldIdPacket.TYPE,
                 SyncWorldIdPacket.STREAM_CODEC,
-                SyncWorldIdPacket::handle // Or a method reference if your signature matches
+                SyncWorldIdPacket::handle
         );
     }
 

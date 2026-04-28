@@ -13,12 +13,15 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
 
+@OnlyIn(Dist.CLIENT)
 public class FullscreenScreenshotScreen extends Screen {
     private final Screen parentScreen;
     private final Screenshot screenshot;

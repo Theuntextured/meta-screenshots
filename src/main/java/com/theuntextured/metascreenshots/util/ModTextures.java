@@ -2,7 +2,10 @@ package com.theuntextured.metascreenshots.util;
 
 import net.minecraft.resources.ResourceLocation;
 import com.theuntextured.metascreenshots.MetaScreenshots;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ModTextures {
     public static final ResourceLocation MULTI_PIN = ResourceLocation.fromNamespaceAndPath(
             MetaScreenshots.MOD_ID,

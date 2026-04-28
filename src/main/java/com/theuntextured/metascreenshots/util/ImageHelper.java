@@ -2,6 +2,8 @@ package com.theuntextured.metascreenshots.util;
 
 import com.mojang.logging.LogUtils;
 import com.theuntextured.metascreenshots.Config;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -12,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Iterator;
 
+@OnlyIn(Dist.CLIENT)
 public class ImageHelper {
     public static void writeImageWithMetadata(com.mojang.blaze3d.platform.NativeImage nativeImage, File targetFile, String jsonPayload) {
         try (nativeImage) {
@@ -46,14 +49,16 @@ public class ImageHelper {
 
             savePngWithMetadata(fullImage, targetFile, jsonPayload);
 
-            File thumbDir = new File(targetFile.getParentFile(), "thumbnails");
-            if (!thumbDir.exists()) {
-                thumbDir.mkdirs();
-            }
+            if (Config.modEnabled) {
+                File thumbDir = new File(targetFile.getParentFile(), "thumbnails");
+                if (!thumbDir.exists()) {
+                    thumbDir.mkdirs();
+                }
 
-            BufferedImage thumbImage = createThumbnail(fullImage, Config.thumbnailHeight);
-            File thumbFile = new File(thumbDir, targetFile.getName());
-            savePngWithMetadata(thumbImage, thumbFile, jsonPayload);
+                BufferedImage thumbImage = createThumbnail(fullImage, Config.thumbnailHeight);
+                File thumbFile = new File(thumbDir, targetFile.getName());
+                savePngWithMetadata(thumbImage, thumbFile, jsonPayload);
+            }
 
         } catch (Exception e) {
             LogUtils.getLogger().error("Failed to process screenshot", e);
@@ -100,7 +105,6 @@ public class ImageHelper {
         }
     }
 
-    // brute-force helper to navigate Java's ancient XML nodes
     private static IIOMetadataNode getOrCreateChildNode(IIOMetadataNode parentNode, String nodeName) {
         for (int i = 0; i < parentNode.getLength(); i++) {
             if (parentNode.item(i).getNodeName().equals(nodeName)) {

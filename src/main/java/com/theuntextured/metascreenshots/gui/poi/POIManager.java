@@ -7,11 +7,14 @@ import com.theuntextured.metascreenshots.gui.IMapDescriptor;
 import com.theuntextured.metascreenshots.gui.MapOverlayManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@OnlyIn(Dist.CLIENT)
 public class POIManager {
     List<PointOfInterest> clusters;
     IMapDescriptor mapDescriptor;
