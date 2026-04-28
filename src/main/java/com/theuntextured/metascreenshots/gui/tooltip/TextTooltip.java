@@ -59,7 +59,7 @@ public class TextTooltip {
 
         for(int i = 0; i < this.strings.size(); ++i) {
             Component s = this.strings.get(i);
-            graphics.drawString(Minecraft.getInstance().font, s, drawX + 10, drawY + 5 + 10 * i, 16777215);
+            graphics.drawString(Minecraft.getInstance().font, s, drawX + 10, drawY + 6 + 10 * i, 16777215);
         }
     }
 }

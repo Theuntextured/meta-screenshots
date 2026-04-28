@@ -4,6 +4,7 @@ import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.containers.Screenshot;
 import com.theuntextured.metascreenshots.containers.ScreenshotContainer;
 import com.theuntextured.metascreenshots.gui.IMapDescriptor;
+import com.theuntextured.metascreenshots.gui.MapOverlayManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 
@@ -89,6 +90,7 @@ public class POIManager {
             closestCluster = cluster;
         }
         if (closestCluster != null) closestCluster.bIsMouseOver = true;
+        MapOverlayManager.activeHoveredPOI = closestCluster;
     }
 }
 

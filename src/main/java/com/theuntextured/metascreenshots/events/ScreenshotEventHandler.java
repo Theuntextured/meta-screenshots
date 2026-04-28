@@ -1,6 +1,5 @@
 package com.theuntextured.metascreenshots.events;
 
-import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.MetaScreenshots;
 import com.theuntextured.metascreenshots.containers.Screenshot;
 import com.theuntextured.metascreenshots.containers.ScreenshotContainer;
@@ -20,8 +19,6 @@ public class ScreenshotEventHandler {
 
     @SubscribeEvent
     public static void onScreenshot(ScreenshotEvent event) {
-        if (!Config.modEnabled) return;
-
         File targetFile = event.getScreenshotFile();
 
         Screenshot screenshot = new Screenshot(event);
@@ -40,6 +37,4 @@ public class ScreenshotEventHandler {
         Component successMessage = Component.literal("Saved mapped screenshot: ").append(fileLink);
         event.setResultMessage(successMessage);
     }
-
-
 }

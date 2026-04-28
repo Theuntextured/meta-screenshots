@@ -144,34 +144,20 @@ public class Screenshot {
     private ResourceLocation thumbTextureLocation = null;
     private ResourceLocation fullTextureLocation = null;
 
-    public ResourceLocation getThumbnailTexture() {
-        if (thumbTextureLocation == null && targetFile.exists()) {
-            try {
-                NativeImage image = NativeImage.read(new java.io.FileInputStream(thumbFile));
-                DynamicTexture texture = new DynamicTexture(image);
-                thumbWidth = image.getWidth();
-                thumbHeight = image.getHeight();
-                thumbTextureLocation = Minecraft.getInstance().getTextureManager().register(
-                        "meta_screenshots/thumbnails" + thumbFile.getName().toLowerCase().replace(".png", ""),
-                        texture
-                );
-            } catch (Exception e) {
-                LogUtils.getLogger().error("Failed to load texture into VRAM: " + thumbFile.getName(), e);
-                thumbTextureLocation = null;
-            }
-        }
-        return thumbTextureLocation;
-    }
-
     public ResourceLocation getFullTexture() {
         if (fullTextureLocation == null && targetFile.exists()) {
-            try {
-                NativeImage image = NativeImage.read(new java.io.FileInputStream(targetFile));
-                DynamicTexture texture = new DynamicTexture(image);
+            // The try-with-resources block strictly seals the memory leak
+            try (java.io.FileInputStream stream = new java.io.FileInputStream(targetFile)) {
+                NativeImage image = NativeImage.read(stream);
+                net.minecraft.client.renderer.texture.DynamicTexture texture = new net.minecraft.client.renderer.texture.DynamicTexture(image);
+
+                // Force bilinear filtering so downscaling the image to the GUI looks smooth
+                texture.setFilter(true, false);
+
                 width = image.getWidth();
                 height = image.getHeight();
                 fullTextureLocation = Minecraft.getInstance().getTextureManager().register(
-                        "meta_screenshots/screenshots" + targetFile.getName().toLowerCase().replace(".png", ""),
+                        "meta_screenshots/screenshots_" + targetFile.getName().toLowerCase().replace(".png", ""),
                         texture
                 );
             } catch (Exception e) {
@@ -182,14 +168,39 @@ public class Screenshot {
         return fullTextureLocation;
     }
 
+    public ResourceLocation getThumbnailTexture() {
+        if (thumbTextureLocation == null && thumbFile.exists()) {
+            try (java.io.FileInputStream stream = new java.io.FileInputStream(thumbFile)) {
+                NativeImage image = NativeImage.read(stream);
+                net.minecraft.client.renderer.texture.DynamicTexture texture = new net.minecraft.client.renderer.texture.DynamicTexture(image);
+
+                texture.setFilter(true, false);
+
+                thumbWidth = image.getWidth();
+                thumbHeight = image.getHeight();
+                thumbTextureLocation = Minecraft.getInstance().getTextureManager().register(
+                        "meta_screenshots/thumbnails_" + thumbFile.getName().toLowerCase().replace(".png", ""),
+                        texture
+                );
+            } catch (Exception e) {
+                LogUtils.getLogger().error("Failed to load texture into VRAM: " + thumbFile.getName(), e);
+                thumbTextureLocation = null;
+            }
+        }
+        return thumbTextureLocation;
+    }
+    public void freeFullTexture() {
+        if (fullTextureLocation != null) {
+            Minecraft.getInstance().getTextureManager().release(fullTextureLocation);
+            fullTextureLocation = null;
+        }
+    }
+
     public void freeTextures() {
         if (thumbTextureLocation != null) {
             Minecraft.getInstance().getTextureManager().release(thumbTextureLocation);
             thumbTextureLocation = null;
         }
-        if (fullTextureLocation != null) {
-            Minecraft.getInstance().getTextureManager().release(fullTextureLocation);
-            fullTextureLocation = null;
-        }
+        freeFullTexture();
     }
 }

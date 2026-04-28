@@ -34,4 +34,26 @@ public class Config {
         thumbnailHeight = THUMBNAIL_HEIGHT.get();
         pinMergeRadius = PIN_MERGE_RADIUS.get();
     }
+
+    // --- SETTERS ---
+
+    public static void setModEnabled(boolean value) {
+        modEnabled = value;
+        MOD_ENABLED.set(value);
+    }
+
+    public static void setCopyToClipboard(boolean value) {
+        copyToClipboard = value;
+        COPY_TO_CLIPBOARD.set(value);
+    }
+
+    public static void setThumbnailHeight(int value) {
+        thumbnailHeight = value;
+        THUMBNAIL_HEIGHT.set(value);
+    }
+
+    public static void setPinMergeRadius(double value) {
+        pinMergeRadius = value;
+        PIN_MERGE_RADIUS.set(value);
+    }
 }
