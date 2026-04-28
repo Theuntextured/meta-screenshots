@@ -2,6 +2,7 @@ package com.theuntextured.metascreenshots.mixin;
 
 import com.mojang.logging.LogUtils;
 import com.theuntextured.metascreenshots.Config;
+import com.theuntextured.metascreenshots.MetaScreenshots;
 import com.theuntextured.metascreenshots.compat.xaero.GuiTexturedButtonDualState;
 import com.theuntextured.metascreenshots.compat.xaero.XaeroIntegrationWrapper;
 import com.theuntextured.metascreenshots.gui.MapOverlayManager;
@@ -84,13 +85,10 @@ public abstract class XaeroFullscreenMapMixin {
                 0, 0,
                 16, 16,
                 ModTextures.MOD_TOGGLE_DISABLED, ModTextures.MOD_TOGGLE,
-                (Button button) -> {
-                    Config.setModEnabled(!Config.modEnabled);
-                    ((GuiTexturedButtonDualState) button).state = Config.modEnabled;
-                },
+                (Button button) -> MetaScreenshots.setModEnabled(!Config.modEnabled),
                 () -> toggleTooltipDisabled,
                 () -> toggleTooltipEnabled);
-        toggleModButton.state = Config.modEnabled;
+        toggleModButton.state = () -> Config.modEnabled;
         self().addButton(toggleModButton);
 
         Tooltip reloadTooltip = new Tooltip(Component.literal("Enable Meta Screenshots Mod"));
@@ -100,11 +98,10 @@ public abstract class XaeroFullscreenMapMixin {
                 0, 0,
                 16, 16,
                 ModTextures.RELOAD, ModTextures.RELOAD,
-                (Button button) -> {
-                    assert false;
-                },
+                (Button button) -> MetaScreenshots.setModEnabled(true),
                 () -> reloadTooltip,
                 () -> reloadTooltip);
+        reloadModButton.visibility = () -> Config.modEnabled;
         self().addButton(reloadModButton);
     }
 }

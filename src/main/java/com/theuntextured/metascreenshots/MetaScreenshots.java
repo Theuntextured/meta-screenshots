@@ -2,7 +2,6 @@ package com.theuntextured.metascreenshots;
 
 import com.mojang.logging.LogUtils;
 import com.theuntextured.metascreenshots.containers.ScreenshotContainer;
-import com.theuntextured.metascreenshots.network.ModMessages;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -26,7 +25,11 @@ public class MetaScreenshots {
         modContainer.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
     }
 
+    static public void setModEnabled(boolean enabled) {
+        ScreenshotContainer.setModEnabled(enabled);
+    }
+
     private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(ScreenshotContainer::Initialize);
+        event.enqueueWork(ScreenshotContainer::init);
     }
 }

@@ -1,6 +1,7 @@
 package com.theuntextured.metascreenshots.containers;
 
 import com.mojang.logging.LogUtils;
+import com.theuntextured.metascreenshots.Config;
 import com.theuntextured.metascreenshots.util.WorldIdData;
 import net.minecraft.client.Minecraft;
 
@@ -12,7 +13,7 @@ public class ScreenshotContainer {
     static public HashSet<Screenshot> allScreenshots = new HashSet<>();
     static public HashSet<Screenshot> worldScreenshots = new HashSet<>();
 
-    public static void Initialize() {
+    public static void init() {
         // Access the default screenshots directory in the Minecraft instance
         File screenshotDir = new File(Minecraft.getInstance().gameDirectory, "screenshots");
 
@@ -27,7 +28,7 @@ public class ScreenshotContainer {
                     Screenshot screenshot = new Screenshot(file);
                     if (screenshot.isValid()) {
                         allScreenshots.add(screenshot);
-                        LogUtils.getLogger().info("Found screenshot: " + file.toString());
+                        LogUtils.getLogger().info("Found screenshot: " + file);
                     }
                 }
         }
@@ -44,5 +45,19 @@ public class ScreenshotContainer {
                 worldScreenshots.add(screenshot);
                 LogUtils.getLogger().info("Found screenshot: " + screenshot.targetFile.toString());
             }
+    }
+
+    public static void setModEnabled(boolean enabled) {
+        //reset
+        worldScreenshots.clear();
+        allScreenshots.forEach(Screenshot::freeTextures);
+        allScreenshots.clear();
+
+        Config.setModEnabled(enabled);
+
+        if (Config.modEnabled) {
+            init();
+            reconstructWorldScreenshots();
+        }
     }
 }
